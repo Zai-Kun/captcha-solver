@@ -17,9 +17,9 @@ characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
 char_to_class = {ch: i for i, ch in enumerate(valid_classes)}
 
-num_train = 1000 * 50
-num_val = 1000 * 50
 
+num_train = 1000
+num_val = 1000
 fonts_dir = "fonts/"
 dataset_dir = "datasets"  # ✅ matches your structure
 
