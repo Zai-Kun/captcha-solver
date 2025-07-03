@@ -75,7 +75,7 @@ def generate_image(index, split):
             draw.text((x, y), letter, font=font, fill="black")
 
         # Hitbox
-        padding_px = 5  # You can adjust this value
+        padding_px = 7  # You can adjust this value
 
         x1 = max(0, int(x) - padding_px)
         y1 = max(0, int(y + bbox[1]) - padding_px)
