@@ -75,7 +75,15 @@ def generate_image(index, split):
             draw.text((x, y), letter, font=font, fill="black")
 
         # Hitbox
-        box = (int(x), int(y + bbox[1]), int(x + w), int(y + bbox[3]))
+        padding_px = 5  # You can adjust this value
+
+        x1 = max(0, int(x) - padding_px)
+        y1 = max(0, int(y + bbox[1]) - padding_px)
+        x2 = min(img_width, int(x + w) + padding_px)
+        y2 = min(img_height, int(y + bbox[3]) + padding_px)
+
+        box = (x1, y1, x2, y2)
+
         hitboxes.append((letter.lower(), box))
         x += w + space_between
 
