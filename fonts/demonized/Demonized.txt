@@ -1,0 +1,104 @@
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
++=+=+=+=+=+=+=+=+=+= A GreyWolf WebWorks Free Font =+=+=+=+=+=+=+=+=+=+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
++=+=+=+=+=+=+=+=+=+=+= "Demonized"  © Rich Gast  =+=+=+=+=+=+=+=+=+=+=+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+"Demonized" version 2.00 is the 53rd free font from Rich Gast. 
+
+It was originally created on 01/20/01. (Version 1.00 - see below)
+
+GreyWolf WebWorks Free Fonts (and versions previously released as
+DarkSide's Free Fonts) are FREE for personal use. They do, however,
+remain the copyrighted property of Rich Gast and GreyWolf WebWorks.
+They are not in the public domain.
+
+Commercial use in any manner, including (but not limited to) use in
+product, service or corporate logo design, inclusion in any software,
+archive, collection or library for distribution to the public which
+either directly or indirectly generates income for the distributor
+requires written permission from the author and copyright holder,
+who is specifically identified as:
+
+Richard Gast
+5818 Prophet's Rock Road
+West Lafayette, IN 47906
+e-mail: greywolfwebworks@comcast.net
+Web Site: http://home.comcast.net/~greywolfwebworks
+
+Commercial ventures granted permission to include any GreyWolf Free
+Font in their software, archive, library or collection will, if they
+so request, be provided with new font files at no charge in which the
+version specifically identifies them as a licensed user. In this
+manner, the author and copyright holder of the fonts can best retain
+control of the type of product/company with which his fonts are to be
+associated.
+
+Commercial ventures who include any GreyWolf Free Font in any manner
+described above without receiving written permission from the author
+and copyright holder will be subject to any and all legal remedies
+available to the copyright holder.
+
+All GreyWolf Free Fonts may be redistributed via FREE web sites,
+e-mail, newsgroups and bulletin boards, as long as the original zip
+file is kept intact and unaltered, including the accompanying text
+file(s). If you wish to include them on a free web site, please just
+ask in advance.
+
+NOTE TO PERSONAL USERS: Maybe, just maybe, you'll make a fortune using
+this font in some manner. If you do, all I ask is that you remember me
+with a token of your appreciation. Any modest amount (at least $1 and
+not to exceed $1,000,000) would be an appropriate gesture for my
+contribution to your monumental financial success. Hey! I can dream!
+
+WARRANTY
+No warranty is either expressed or implied for this software product
+by GreyWolf WebWorks. This software product and related documentation
+are provided "as is" without warranty of any kind including, but not
+limited to, implied warranties of merchantability, fitness for a given
+purpose, or noninfringement. The entire risk arising from use of the
+software product remains with you, the user.
+
+LIABILITY FOR DAMAGES. In no event shall GreyWolf WebWorks be liable
+for any damages whatsoever (including, but not limited to, damages
+for loss of business profits, business interruption, loss of business
+information, or any other pecuniary loss) arising from the use of or
+inability to use this product, even if GreyWolf WebWorks has been
+advised of the possibility of such damages.
+
+The character set includes:
+
+Upper and lower case letters, numbers, international characters,
+many extended characters and most punctuation. (The original version
+contained only letters, numbers and limited punctuation, along with
+2 Blue Demon logos)
+
+Demonized is the freeware version of a font named "Blue Demon" that
+I originally made for DePaul University. It's a long story, but I'll
+give you the condensed version to explain why I am distributing an
+improved version of the font for free.
+
+Back in 1999, I was contacted by DePaul University to see what I
+would charge them to make a true type font for them. I told them, as
+you might expect, it would be $0.00, as are all of my fonts. They
+were pleasantly shocked and took me up on my offer. Several months,
+and many e-mails (some answered, some not) later, I finally was able
+to get enough information from them to created the "Blue Demon" font.
+After they supplied several defective EPS files (which would not open),
+I gave up and created the font from scratch.
+
+In November of 1999, I completed a "beta" version of the font and
+e-mailed it to them for their evaluation of the characters, spacing,
+etc. In spite of repeated e-mail inquiries throughout 2000, I have
+yet to ever receive a reply as to whether the font was acceptable.
+No "Thanks, it's just what we wanted." No "Your font sucks, take a
+hike bozo!" No nuthin'! I've been "Demonized" and now you can be too!
+
+"Go [insert your college team here]!!  Beat the Blue Demons!!"
+
+And, if your from DePaul and want to know who so poorly represents
+your university with outside vendors, I have names, dates and all
+pertinent correspondence.
+
+..... Rich Gast
+GreyWolf WebWorks
