@@ -1,6 +1,7 @@
 import os
 import random
 import string
+
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
@@ -12,16 +13,14 @@ shadow_offset = (2, 2)
 line_width = 3
 line_count = 3
 letters_per_image = 3
+images_per_font = 1000
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
 char_to_class = {ch: i for i, ch in enumerate(valid_classes)}
 
-
-num_train = 1000*20
-num_val = 1000*20
 fonts_dir = "fonts/"
-dataset_dir = "datasets"  # ✅ matches your structure
+dataset_dir = "datasets"
 
 # === CREATE FOLDERS ===
 os.makedirs(f"{dataset_dir}/images/train", exist_ok=True)
@@ -29,9 +28,14 @@ os.makedirs(f"{dataset_dir}/images/val", exist_ok=True)
 os.makedirs(f"{dataset_dir}/labels/train", exist_ok=True)
 os.makedirs(f"{dataset_dir}/labels/val", exist_ok=True)
 
-def get_random_font():
-    subdir = os.path.join(fonts_dir, random.choice(os.listdir(fonts_dir)))
-    return os.path.join(subdir, random.choice(os.listdir(subdir)))
+def get_all_fonts():
+    fonts = []
+    for root, _, files in os.walk(fonts_dir):
+        for f in files:
+            if f.lower().endswith((".ttf", ".otf")):
+                font_path = os.path.join(root, f)
+                fonts.append(font_path)
+    return fonts
 
 def bbox_to_yolo(bbox, img_width, img_height):
     x1, y1, x2, y2 = bbox
@@ -41,9 +45,8 @@ def bbox_to_yolo(bbox, img_width, img_height):
     height = (y2 - y1) / img_height
     return x_center, y_center, width, height
 
-def generate_image(index, split):
+def generate_image(index, font_path, split):
     letters = ''.join(random.choices(characters, k=letters_per_image))
-    font_path = get_random_font()
     font = ImageFont.truetype(font_path, font_size)
     image = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(image)
@@ -75,22 +78,20 @@ def generate_image(index, split):
             draw.text((x, y), letter, font=font, fill="black")
 
         # Hitbox
-        padding_px = 7  # You can adjust this value
-
+        padding_px = 6
         x1 = max(0, int(x) - padding_px)
         y1 = max(0, int(y + bbox[1]) - padding_px)
         x2 = min(img_width, int(x + w) + padding_px)
         y2 = min(img_height, int(y + bbox[3]) + padding_px)
-
         box = (x1, y1, x2, y2)
 
         hitboxes.append((letter.lower(), box))
         x += w + space_between
 
-    # === Distortion lines ===
+    # === Distortions (Lines + Noise) ===
     used_y_positions = []
     for _ in range(line_count):
-        style = random.choice(['line', 'curve', 'squiggle'])
+        style = random.choice(['line', 'curve', 'squiggle', 'dot', 'rect', 'blob', 'vline', 'hline'])
         x_start = random.randint(0, int(img_width * 0.2))
         length = random.randint(int(img_width * 0.7), int(img_width * 0.9))
         x_end = min(x_start + length, img_width)
@@ -106,6 +107,7 @@ def generate_image(index, split):
 
         if style == 'line':
             draw.line([(x_start, y), (x_end, y + random.randint(-1, 1))], fill="black", width=line_width)
+
         elif style == 'curve':
             points = [
                 (x_start, y + random.randint(-2, 2)),
@@ -114,6 +116,7 @@ def generate_image(index, split):
                 (x_end, y + random.randint(-2, 2)),
             ]
             draw.line(points, fill="black", width=line_width, joint="curve")
+
         elif style == 'squiggle':
             step = 5
             amplitude = random.randint(3, 6)
@@ -123,6 +126,36 @@ def generate_image(index, split):
                 y_offset = int(amplitude * random.uniform(-1, 1))
                 points.append((x, y + y_offset))
             draw.line(points, fill="black", width=line_width)
+
+        elif style == 'dot':
+            for _ in range(random.randint(5, 15)):
+                dot_x = random.randint(0, img_width - 1)
+                dot_y = random.randint(0, img_height - 1)
+                draw.point((dot_x, dot_y), fill="black")
+
+        elif style == 'rect':
+            for _ in range(random.randint(1, 3)):
+                rx1 = random.randint(0, img_width - 10)
+                ry1 = random.randint(0, img_height - 10)
+                rx2 = rx1 + random.randint(3, 10)
+                ry2 = ry1 + random.randint(3, 10)
+                draw.rectangle([rx1, ry1, rx2, ry2], outline="black", width=1)
+
+        elif style == 'blob':
+            for _ in range(random.randint(1, 2)):
+                bx = random.randint(0, img_width - 10)
+                by = random.randint(0, img_height - 10)
+                bw = random.randint(6, 12)
+                bh = random.randint(6, 12)
+                draw.ellipse([bx, by, bx + bw, by + bh], fill="black")
+
+        elif style == 'vline':
+            vx = random.randint(0, img_width - 1)
+            draw.line([(vx, 0), (vx, img_height)], fill="black", width=1)
+
+        elif style == 'hline':
+            hy = random.randint(0, img_height - 1)
+            draw.line([(0, hy), (img_width, hy)], fill="black", width=1)
 
     # Save image and label
     img_path = f"{dataset_dir}/images/{split}/{index}.jpg"
@@ -137,13 +170,18 @@ def generate_image(index, split):
             x_c, y_c, w, h = bbox_to_yolo(box, img_width, img_height)
             f.write(f"{class_id} {x_c:.6f} {y_c:.6f} {w:.6f} {h:.6f}\n")
 
-# === GENERATE DATA ===
-print("🔧 Generating training set...")
-for i in tqdm(range(num_train)):
-    generate_image(i, "train")
 
-print("🔧 Generating validation set...")
-for i in tqdm(range(num_val)):
-    generate_image(i, "val")
+# === GENERATE DATA ===
+all_fonts = get_all_fonts()
+global_index = 0
+
+print("🖋️ Generating dataset per font...")
+
+for font_path in all_fonts:
+    print(f"▶️ Using font: {os.path.basename(font_path)}")
+    for i in tqdm(range(images_per_font), desc=f"{os.path.basename(font_path)[:20]}"):
+        split = "train" if global_index < (len(all_fonts) * images_per_font * 0.8) else "val"
+        generate_image(global_index, font_path, split)
+        global_index += 1
 
 print("✅ Dataset ready in 'datasets/'")
