@@ -13,7 +13,7 @@ shadow_offset = (2, 2)
 line_width = 3
 line_count = 3
 letters_per_image = 3
-images_per_font = 200
+images_per_font = 800
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
