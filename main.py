@@ -222,7 +222,7 @@ def generate_image_from_image_font(index, font_dir, split):
 all_fonts = get_all_fonts()
 all_image_fonts = get_image_fonts()
 global_index = 0
-total_fonts = len(all_fonts) + len(all_image_fonts)
+total_fonts = len(all_image_fonts)
 split_threshold = int(total_fonts * images_per_font * 0.8)
 
 # print("🖋️ Generating from TTF fonts...")
