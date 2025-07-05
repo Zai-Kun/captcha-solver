@@ -12,7 +12,7 @@ outline_width = 2
 line_width = 3
 line_count = 3
 letters_per_image = 3
-images_per_font = 10000
+images_per_font = 300
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
@@ -222,16 +222,16 @@ def generate_image_from_image_font(index, font_dir, split):
 all_fonts = get_all_fonts()
 all_image_fonts = get_image_fonts()
 global_index = 0
-total_fonts = len(all_image_fonts)
+total_fonts = len(all_image_fonts) + len(all_fonts)
 split_threshold = int(total_fonts * images_per_font * 0.8)
 
-# print("🖋️ Generating from TTF fonts...")
-# for font_path in all_fonts:
-#     print(f"▶️ {os.path.basename(font_path)}")
-#     for _ in tqdm(range(images_per_font)):
-#         split = "train" if global_index < split_threshold else "val"
-#         generate_image(global_index, font_path, split)
-#         global_index += 1
+print("🖋️ Generating from TTF fonts...")
+for font_path in all_fonts:
+    print(f"▶️ {os.path.basename(font_path)}")
+    for _ in tqdm(range(images_per_font)):
+        split = "train" if global_index < split_threshold else "val"
+        generate_image(global_index, font_path, split)
+        global_index += 1
 
 print("🖼️ Generating from image fonts...")
 for font_dir in all_image_fonts:
