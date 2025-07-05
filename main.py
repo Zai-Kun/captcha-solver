@@ -153,7 +153,6 @@ def save_sample(image, hitboxes, index, split):
 # === GENERATE FROM TTF FONT ===
 def generate_image(index, font_path, split):
     letters = "".join(random.choices(characters, k=letters_per_image))
-    print(letters, index, font_path)
     font = ImageFont.truetype(font_path, font_size)
     image = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(image)
