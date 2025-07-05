@@ -12,7 +12,7 @@ outline_width = 2
 line_width = 3
 line_count = 3
 letters_per_image = 3
-images_per_font = 300
+images_per_font = 500
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
@@ -153,6 +153,7 @@ def save_sample(image, hitboxes, index, split):
 # === GENERATE FROM TTF FONT ===
 def generate_image(index, font_path, split):
     letters = "".join(random.choices(characters, k=letters_per_image))
+    print(letters, index, font_path)
     font = ImageFont.truetype(font_path, font_size)
     image = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(image)
@@ -222,7 +223,7 @@ def generate_image_from_image_font(index, font_dir, split):
 all_fonts = get_all_fonts()
 all_image_fonts = get_image_fonts()
 global_index = 0
-total_fonts = len(all_image_fonts) + len(all_fonts)
+total_fonts =  len(all_fonts) # len(all_image_fonts)
 split_threshold = int(total_fonts * images_per_font * 0.8)
 
 print("🖋️ Generating from TTF fonts...")
@@ -233,12 +234,12 @@ for font_path in all_fonts:
         generate_image(global_index, font_path, split)
         global_index += 1
 
-print("🖼️ Generating from image fonts...")
-for font_dir in all_image_fonts:
-    print(f"▶️ {os.path.basename(font_dir)}")
-    for _ in tqdm(range(images_per_font)):
-        split = "train" if global_index < split_threshold else "val"
-        generate_image_from_image_font(global_index, font_dir, split)
-        global_index += 1
+# print("🖼️ Generating from image fonts...")
+# for font_dir in all_image_fonts:
+#     print(f"▶️ {os.path.basename(font_dir)}")
+#     for _ in tqdm(range(images_per_font)):
+#         split = "train" if global_index < split_threshold else "val"
+#         generate_image_from_image_font(global_index, font_dir, split)
+#         global_index += 1
 
-print("✅ Dataset ready in 'datasets/'")
+# print("✅ Dataset ready in 'datasets/'")
