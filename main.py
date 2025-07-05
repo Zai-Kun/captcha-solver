@@ -7,12 +7,12 @@ from tqdm import tqdm
 
 # === CONFIG ===
 img_width, img_height = 150, 50
-font_size = 36
+font_size_start = 30
 outline_width = 2
 line_width = 3
-line_count = 3
+line_count = 7
 letters_per_image = 3
-images_per_font = 500
+images_per_font = 600
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
@@ -153,7 +153,7 @@ def save_sample(image, hitboxes, index, split):
 # === GENERATE FROM TTF FONT ===
 def generate_image(index, font_path, split):
     letters = "".join(random.choices(characters, k=letters_per_image))
-    font = ImageFont.truetype(font_path, font_size)
+    font = ImageFont.truetype(font_path, random.randint(font_size_start, font_size_start + 5))
     image = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(image)
 
@@ -172,18 +172,20 @@ def generate_image(index, font_path, split):
         bbox = font.getbbox(letter)
         w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
         y = (img_height - h) / 2 - bbox[1]
-        is_hollow = random.choice([True, False])
-        if is_hollow:
-            draw.text(
-                (x, y),
-                letter,
-                font=font,
-                fill="white",
-                stroke_width=outline_width,
-                stroke_fill="black",
-            )
-        else:
-            draw.text((x, y), letter, font=font, fill="black")
+        # shadow
+        draw.text((x+3, y+3), letter, font=font, fill="black")
+        # is_hollow = random.choice([True, False])
+        # if is_hollow:
+        draw.text(
+            (x, y),
+            letter,
+            font=font,
+            fill="white",
+            stroke_width=outline_width,
+            stroke_fill="black",
+        )
+        # else:
+        # draw.text((x, y), letter, font=font, fill="black")
         box = (int(x) -4, int(y + bbox[1])-4, int(x + w)+4, int(y + bbox[3])+4)
         hitboxes.append((letter.lower(), box))
         x += w + space_between
@@ -206,7 +208,7 @@ def generate_image_from_image_font(index, font_dir, split):
         if not os.path.exists(path):
             continue
         glyph = Image.open(path).convert("RGBA")
-        glyph = ImageOps.contain(glyph, (font_size, font_size))
+        glyph = ImageOps.contain(glyph, (font_size_start, font_size_start))
         w, h = glyph.size
         y = (img_height - h) // 2
         canvas.paste(glyph, (x, y), glyph)
