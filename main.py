@@ -1,3 +1,4 @@
+import math
 import os
 import random
 import string
@@ -10,9 +11,9 @@ img_width, img_height = 150, 50
 font_size_start = 30
 outline_width = 2
 line_width = 3
-line_count = 7
+line_count = 8
 letters_per_image = 3
-images_per_font = 600
+images_per_font = 500
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
@@ -62,77 +63,92 @@ def bbox_to_yolo(bbox, img_width, img_height):
 
 
 # === DISTORTIONS ===
-def add_noise(draw):
+def add_noise(base_image):
+    draw = ImageDraw.Draw(base_image)
     used_y_positions = []
+
     for _ in range(line_count):
         style = random.choice(
             ["line", "curve", "squiggle", "dot", "rect", "blob", "vline", "hline"]
         )
-        x_start = random.randint(0, int(img_width * 0.2))
-        length = random.randint(int(img_width * 0.7), int(img_width * 0.9))
-        x_end = min(x_start + length, img_width)
 
-        for _ in range(10):
-            y = random.randint(0, img_height - 1)
-            if all(abs(y - used) > 12 for used in used_y_positions):
-                used_y_positions.append(y)
-                break
-        else:
-            y = random.randint(0, img_height - 1)
-            used_y_positions.append(y)
+        # Create a transparent layer for noise
+        noise_layer = Image.new("RGBA", (img_width, img_height), (255, 255, 255, 0))
+        noise_draw = ImageDraw.Draw(noise_layer)
+
+        # Random base point
+        x_start = random.randint(0, img_width - 20)
+        y_start = random.randint(0, img_height - 20)
+        length = random.randint(30, img_width // 2)
 
         if style == "line":
-            draw.line(
-                [(x_start, y), (x_end, y + random.randint(-1, 1))],
+            x_end = x_start + length
+            y_end = y_start + random.randint(-10, 10)
+            noise_draw.line(
+                [(x_start, y_start), (x_end, y_end)],
                 fill="black",
                 width=line_width,
             )
+
         elif style == "curve":
             points = [
-                (x_start, y + random.randint(-2, 2)),
-                (x_start + length // 3, y + random.randint(-4, 4)),
-                (x_start + 2 * length // 3, y + random.randint(-4, 4)),
-                (x_end, y + random.randint(-2, 2)),
+                (x_start, y_start),
+                (x_start + length // 3, y_start + random.randint(-20, 20)),
+                (x_start + 2 * length // 3, y_start + random.randint(-20, 20)),
+                (x_start + length, y_start + random.randint(-5, 5)),
             ]
-            draw.line(points, fill="black", width=line_width, joint="curve")
+            noise_draw.line(points, fill="black", width=line_width, joint="curve")
+
         elif style == "squiggle":
             step = 5
-            amplitude = random.randint(3, 6)
+            amplitude = random.randint(5, 10)
             points = []
-            for t in range(0, x_end - x_start, step):
+            for t in range(0, length, step):
                 x = x_start + t
-                y_offset = int(amplitude * random.uniform(-1, 1))
-                points.append((x, y + y_offset))
-            draw.line(points, fill="black", width=line_width)
+                y = y_start + int(amplitude * math.sin(t / 5.0))
+                points.append((x, y))
+            noise_draw.line(points, fill="black", width=line_width)
+
         elif style == "dot":
             for _ in range(random.randint(5, 15)):
-                draw.point(
+                noise_draw.point(
                     (
                         random.randint(0, img_width - 1),
                         random.randint(0, img_height - 1),
                     ),
                     fill="black",
                 )
+
         elif style == "rect":
             for _ in range(random.randint(1, 3)):
-                rx1 = random.randint(0, img_width - 10)
-                ry1 = random.randint(0, img_height - 10)
-                rx2 = rx1 + random.randint(3, 10)
-                ry2 = ry1 + random.randint(3, 10)
-                draw.rectangle([rx1, ry1, rx2, ry2], outline="black", width=1)
+                w, h = random.randint(5, 20), random.randint(5, 20)
+                x1 = random.randint(0, img_width - w)
+                y1 = random.randint(0, img_height - h)
+                noise_draw.rectangle([x1, y1, x1 + w, y1 + h], outline="black", width=1)
+
         elif style == "blob":
             for _ in range(random.randint(1, 2)):
-                bx = random.randint(0, img_width - 10)
-                by = random.randint(0, img_height - 10)
-                bw = random.randint(6, 12)
-                bh = random.randint(6, 12)
-                draw.ellipse([bx, by, bx + bw, by + bh], fill="black")
+                w, h = random.randint(6, 20), random.randint(6, 20)
+                x1 = random.randint(0, img_width - w)
+                y1 = random.randint(0, img_height - h)
+                noise_draw.ellipse([x1, y1, x1 + w, y1 + h], fill="black")
+
         elif style == "vline":
-            vx = random.randint(0, img_width - 1)
-            draw.line([(vx, 0), (vx, img_height)], fill="black", width=1)
+            x = random.randint(0, img_width - 1)
+            noise_draw.line([(x, 0), (x, img_height)], fill="black", width=1)
+
         elif style == "hline":
-            hy = random.randint(0, img_height - 1)
-            draw.line([(0, hy), (img_width, hy)], fill="black", width=1)
+            y = random.randint(0, img_height - 1)
+            noise_draw.line([(0, y), (img_width, y)], fill="black", width=1)
+
+        # Randomly rotate the layer
+        angle = random.randint(0, 360)
+        rotated = noise_layer.rotate(angle, expand=True)
+
+        # Paste onto base image at random offset
+        offset_x = random.randint(-10, 10)
+        offset_y = random.randint(-10, 10)
+        base_image.paste(rotated, (offset_x, offset_y), rotated)
 
 
 # === SAVE FUNCTION ===
@@ -153,7 +169,9 @@ def save_sample(image, hitboxes, index, split):
 # === GENERATE FROM TTF FONT ===
 def generate_image(index, font_path, split):
     letters = "".join(random.choices(characters, k=letters_per_image))
-    font = ImageFont.truetype(font_path, random.randint(font_size_start, font_size_start + 5))
+    font = ImageFont.truetype(
+        font_path, random.randint(font_size_start, font_size_start + 5)
+    )
     image = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(image)
 
@@ -173,7 +191,7 @@ def generate_image(index, font_path, split):
         w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
         y = (img_height - h) / 2 - bbox[1]
         # shadow
-        draw.text((x+3, y+3), letter, font=font, fill="black")
+        draw.text((x + 3, y + 3), letter, font=font, fill="black")
         # is_hollow = random.choice([True, False])
         # if is_hollow:
         draw.text(
@@ -186,11 +204,11 @@ def generate_image(index, font_path, split):
         )
         # else:
         # draw.text((x, y), letter, font=font, fill="black")
-        box = (int(x) -4, int(y + bbox[1])-4, int(x + w)+4, int(y + bbox[3])+4)
+        box = (int(x) - 4, int(y + bbox[1]) - 4, int(x + w) + 4, int(y + bbox[3]) + 4)
         hitboxes.append((letter.lower(), box))
         x += w + space_between
 
-    add_noise(draw)
+    add_noise(image)
     save_sample(image, hitboxes, index, split)
 
 
@@ -224,7 +242,7 @@ def generate_image_from_image_font(index, font_dir, split):
 all_fonts = get_all_fonts()
 all_image_fonts = get_image_fonts()
 global_index = 0
-total_fonts =  len(all_fonts) # len(all_image_fonts)
+total_fonts = len(all_fonts)  # len(all_image_fonts)
 split_threshold = int(total_fonts * images_per_font * 0.8)
 
 print("🖋️ Generating from TTF fonts...")
