@@ -184,7 +184,7 @@ def generate_image(index, font_path, split):
             )
         else:
             draw.text((x, y), letter, font=font, fill="black")
-        box = (int(x), int(y + bbox[1]), int(x + w), int(y + bbox[3]))
+        box = (int(x) -4, int(y + bbox[1])-4, int(x + w)+4, int(y + bbox[3])+4)
         hitboxes.append((letter.lower(), box))
         x += w + space_between
 
