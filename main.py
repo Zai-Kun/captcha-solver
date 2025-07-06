@@ -10,9 +10,9 @@ img_width, img_height = 150, 50
 font_size_start = 30
 outline_width = 2
 line_width = 3
-line_count = 7
+line_count = 8
 letters_per_image = 3
-images_per_font = 6000
+images_per_font = 3500
 
 characters = string.ascii_letters + string.digits
 valid_classes = list(string.ascii_lowercase + string.digits)
