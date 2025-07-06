@@ -11,7 +11,7 @@ outline_width = 2
 line_width = 3
 line_count = 8
 letters_per_image = 3
-images_per_font = 2000
+images_per_font = 1000
 
 characters = string.ascii_letters + string.digits
 
