@@ -9,7 +9,7 @@ img_width, img_height = 150, 50
 font_size_start = 30
 outline_width = 2
 line_width = 3
-line_count = 8
+line_count = 5
 letters_per_image = 3
 images_per_font = 1000
 
