@@ -3,7 +3,6 @@ import random
 import string
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
-from tqdm import tqdm
 
 # === CONFIG ===
 img_width, img_height = 150, 50
@@ -12,11 +11,9 @@ outline_width = 2
 line_width = 3
 line_count = 8
 letters_per_image = 3
-images_per_font = 3500
+images_per_font = 2000
 
 characters = string.ascii_letters + string.digits
-valid_classes = list(string.ascii_lowercase + string.digits)
-char_to_class = {ch: i for i, ch in enumerate(valid_classes)}
 
 fonts_dir = "fonts/"
 image_fonts_dir = "fonts-images/"
@@ -46,7 +43,7 @@ def get_image_fonts():
             dir_path = os.path.join(root, d)
             if any(
                 os.path.isfile(os.path.join(dir_path, f"{c}.png"))
-                for c in valid_classes
+                for c in characters
             ):
                 image_fonts.append(dir_path)
     return image_fonts
@@ -143,9 +140,7 @@ def save_sample(image, hitboxes, index, split):
 
     with open(label_path, "w") as f:
         for letter, box in hitboxes:
-            if letter not in char_to_class:
-                continue
-            class_id = char_to_class[letter]
+            class_id = characters.index(letter)
             x_c, y_c, w, h = bbox_to_yolo(box, img_width, img_height)
             f.write(f"{class_id} {x_c:.6f} {y_c:.6f} {w:.6f} {h:.6f}\n")
 
@@ -187,7 +182,7 @@ def generate_image(index, font_path, split):
         # else:
         # draw.text((x, y), letter, font=font, fill="black")
         box = (int(x) -4, int(y + bbox[1])-4, int(x + w)+4, int(y + bbox[3])+4)
-        hitboxes.append((letter.lower(), box))
+        hitboxes.append((letter, box))
         x += w + space_between
 
     add_noise(draw)
@@ -204,7 +199,7 @@ def generate_image_from_image_font(index, font_dir, split):
     for letter in letters:
         path = os.path.join(font_dir, f"{letter}.png")
         if not os.path.exists(path):
-            path = os.path.join(font_dir, f"{letter.lower()}.png")
+            path = os.path.join(font_dir, f"{letter}.png")
         if not os.path.exists(path):
             continue
         glyph = Image.open(path).convert("RGBA")
@@ -212,7 +207,7 @@ def generate_image_from_image_font(index, font_dir, split):
         w, h = glyph.size
         y = (img_height - h) // 2
         canvas.paste(glyph, (x, y), glyph)
-        hitboxes.append((letter.lower(), (x, y, x + w, y + h)))
+        hitboxes.append((letter, (x, y, x + w, y + h)))
         x += w + 5
 
     draw = ImageDraw.Draw(canvas)
@@ -229,8 +224,7 @@ split_threshold = int(total_fonts * images_per_font * 0.8)
 
 print("🖋️ Generating from TTF fonts...")
 for font_path in all_fonts:
-    print(f"▶️ {os.path.basename(font_path)}")
-    for _ in tqdm(range(images_per_font)):
+    for _ in range(images_per_font):
         split = "train" if global_index < split_threshold else "val"
         generate_image(global_index, font_path, split)
         global_index += 1
