@@ -9,9 +9,9 @@ img_width, img_height = 150, 50
 font_size_start = 30
 outline_width = 2
 line_width = 3
-line_count = 5
+line_count = 7
 letters_per_image = 3
-images_per_font = 10_000
+images_per_font = 2000
 
 characters = string.ascii_letters + string.digits
 
