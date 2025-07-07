@@ -11,7 +11,7 @@ outline_width = 2
 line_width = 3
 line_count = 5
 letters_per_image = 3
-images_per_font = 1000
+images_per_font = 10_000
 
 characters = string.ascii_letters + string.digits
 
@@ -185,7 +185,8 @@ def generate_image(index, font_path, split):
         hitboxes.append((letter, box))
         x += w + space_between
 
-    add_noise(draw)
+    if random.choice([True, False]):
+        add_noise(draw)
     save_sample(image, hitboxes, index, split)
 
 
